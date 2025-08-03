@@ -45,6 +45,18 @@ jobs:
       - name: Install Wrangler
         run: npm install -g wrangler
 
+      - name: Generate wrangler.toml
+        run: |
+          cd backend
+          cat << EOF > wrangler.toml
+          name = "${{ env.WORKER_NAME }}"
+          account_id = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          compatibility_date = "2025-08-03"
+          [[kv_namespaces]]
+          binding = "KV_STORAGE"
+          id = "${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}"
+          EOF
+
       - name: Deploy Worker
         run: |
           cd backend
