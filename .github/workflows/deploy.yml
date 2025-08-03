@@ -1,0 +1,61 @@
+name: Deploy to Cloudflare
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_NAME: mirinda-ai-${{ github.event.repository.name }}-frontend
+      WORKER_NAME: mirinda-ai-${{ github.event.repository.name }}-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies (Frontend)
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ env.PROJECT_NAME }}
+          directory: frontend/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Wrangler
+        run: npm install -g wrangler
+
+      - name: Deploy Worker
+        run: |
+          cd backend
+          npx wrangler deploy --name ${{ env.WORKER_NAME }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          KV_STORAGE: ${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}
+
+      - name: Test Frontend
+        run: |
+          curl -f https://${{ env.PROJECT_NAME }}.pages.dev
+
+      - name: Test Worker
+        run: |
+          curl -f https://${{ env.WORKER_NAME }}.workers.dev

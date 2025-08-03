@@ -1,0 +1,6 @@
+name = "mirinda-ai-{{REPO_NAME}}-backend"
+account_id = "a5f557f20df651f802573bec68e74295"
+compatibility_date = "2025-08-03"
+[[kv_namespaces]]
+binding = "KV_STORAGE"
+id = "a78285a684854a5fa207b2d8fba59317"
