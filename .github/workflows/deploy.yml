@@ -73,4 +73,4 @@ jobs:
 
       - name: Test Worker
         run: |
-          curl -f https://${{ env.WORKER_NAME }}.workers.dev
+          curl -f https://${{ env.WORKER_NAME }}.youssef-a5f.workers.dev
