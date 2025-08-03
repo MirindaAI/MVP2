@@ -52,6 +52,7 @@ jobs:
           name = "${{ env.WORKER_NAME }}"
           account_id = "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
           compatibility_date = "2025-08-03"
+          main = "index.js"
           [[kv_namespaces]]
           binding = "KV_STORAGE"
           id = "${{ secrets.CLOUDFLARE_KV_NAMESPACE_ID }}"
