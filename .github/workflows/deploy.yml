@@ -8,18 +8,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      PROJECT_NAME: mirinda-ai-${{ github.event.repository.name | lower }}-frontend
-      WORKER_NAME: mirinda-ai-${{ github.event.repository.name | lower }}-backend
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set environment variables
+        run: |
+          echo "PROJECT_NAME=mirinda-ai-$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')-frontend" >> $GITHUB_ENV
+          echo "WORKER_NAME=mirinda-ai-$(echo ${{ github.event.repository.name }} | tr '[:upper:]' '[:lower:]')-backend" >> $GITHUB_ENV
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18"
+          node-version: "20"
 
       - name: Install dependencies (Frontend)
         run: |
@@ -39,6 +40,7 @@ jobs:
           projectName: ${{ env.PROJECT_NAME }}
           directory: frontend/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          wranglerVersion: 2
 
       - name: Install Wrangler
         run: npm install -g wrangler
