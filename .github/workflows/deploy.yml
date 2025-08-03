@@ -9,8 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      PROJECT_NAME: mirinda-ai-${{ github.event.repository.name }}-frontend
-      WORKER_NAME: mirinda-ai-${{ github.event.repository.name }}-backend
+      PROJECT_NAME: mirinda-ai-${{ github.event.repository.name | lower }}-frontend
+      WORKER_NAME: mirinda-ai-${{ github.event.repository.name | lower }}-backend
 
     steps:
       - name: Checkout code
